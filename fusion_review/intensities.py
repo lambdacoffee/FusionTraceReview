@@ -148,7 +148,7 @@ class IntensityDatabase:
 
     def extend(self):
         new_lst_columns = ("RawDataNorm",)
-        new_int_columns = ("Status", "isFusion", "FusionStart", "FusionEnd")
+        new_int_columns = ("Status", "isFusion", "FusionStart", "FusionEnd", "isExclusion")
         for col in (new_lst_columns + new_int_columns):
             self.df[col] = pd.Series(dtype=object)
         for i in range(0, self.num_traces):

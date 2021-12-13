@@ -16,10 +16,13 @@ class IntensityTrace:
         self.id = intensity_database
         self.idf = pd.DataFrame(dtype=np.float32)
         self.isFusion = intensity_database.df["isFusion"][trace_number-1]
-        if not self.isFusion:
-            color = "black"
-        else:
+        self.isExclusion = intensity_database.df["isExclusion"][trace_number - 1]
+        if self.isFusion:
             color = "tab:blue"
+        elif self.isExclusion:
+            color = "tab:red"
+        else:
+            color = "black"
         self.datad = {"TruncDataNorm": {"time": [], "data": [], "c": color, "z": 0}}
 
     def set_raw_norm_data(self):

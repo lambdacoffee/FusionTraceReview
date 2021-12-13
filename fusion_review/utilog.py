@@ -16,12 +16,14 @@ class UserInputHandler:
         self.end_trace = current_index + 1
         self.id = intensity_database
         self.quit_flag = "q"
-        self.resume_flag = "x"
+        self.resume_flag = "r"
         self.previous_flag = "p"
         self.fusion_flag = "f"
         self.next_flag = "n"
         self.undo_flag = "u"
-        self.save_flag = "v"
+        self.exclude_flag = "x"
+        self.save_flag = "s"
+        self.write_flag = "w"
         self.invert_flag = "i"
         self.help_flag = "h"
         self.prompt_msg = "User Review Traces - input command below, press \'" + self.help_flag + "\' for help:\n"
@@ -42,10 +44,17 @@ class UserInputHandler:
             str(self.id.df["FusionEnd"][trace_num - 1]))
         print(output_str)
 
+    def handle_exclusion(self, trace_num):
+        self.id.df["isExclusion"][trace_num - 1] = 1
+        self.id.df["isFusion"][trace_num - 1] = 0
+        self.id.df["FusionStart"][trace_num - 1] = 0
+        self.id.df["FusionEnd"][trace_num - 1] = 0
+
     def handle_undo(self, trace_num):
         self.id.df["isFusion"][trace_num - 1] = 0
         self.id.df["FusionStart"][trace_num - 1] = 0
         self.id.df["FusionEnd"][trace_num - 1] = 0
+        self.id.df["isExclusion"][trace_num - 1] = 0
 
     def handle_status(self):
         for i in range(self.start_trace-1, self.end_trace-1):
@@ -62,7 +71,9 @@ class UserInputHandler:
                 self.id.df["isFusion"][trace_idx] = isFusion
                 if isFusion:
                     self.id.df["FusionStart"][trace_idx] = int(line_split[3])
-                    self.id.df["FusionEnd"][trace_idx] = int(line_split[4][:-1])
+                    self.id.df["FusionEnd"][trace_idx] = int(line_split[4])
+                isExclusion = int(line_split[5][:-1])
+                self.id.df["isExclusion"][trace_idx] = isExclusion
 
     def handle_help(self):
         help_msg = "Available terminal command flags are as listed:\n"
@@ -72,8 +83,10 @@ class UserInputHandler:
         help_msg += "\'" + self.resume_flag + "\'" + " - resume previous re-scoring at last reviewed panel\n"
         help_msg += "\'" + self.fusion_flag + "\'" + " - mark a trace on the current panel as fusion\n"
         help_msg += "\'" + self.undo_flag + "\'" + " - mark a trace on the current panel as NOT fusion\n"
+        help_msg += "\'" + self.exclude_flag + "\'" + " - mark a trace on the current panel for exclusion in efficiency\n"
         help_msg += "\'" + self.save_flag + "\'" + " - save the current progression***\n***NOTE: THIS MUST BE USED TO " \
                                                    "SAVE PROGRESS, OTHERWISE RE-SCORING WILL *NOT* BE SAVED!!!\n"
+        help_msg += "\'" + self.write_flag + "\'" + " - write all traces, including those not reviewed yet, to .txt output file\n"
         help_msg += "\'" + self.invert_flag + "\'" + " - invert colors (great for night time & reducing eye strain!)\n"
         print(help_msg)
 
@@ -94,7 +107,7 @@ class UserInputHandler:
                 return 4
             elif usr_input == self.undo_flag:
                 while True:
-                    trace_input = input("Trace number to undo fusion: ")
+                    trace_input = input("Trace number to undo fusion/exclusion: ")
                     try:
                         int(trace_input)
                     except ValueError:
@@ -110,6 +123,24 @@ class UserInputHandler:
                         plt.close()
                         self.handle_undo(trace_input)
                         return 3
+            elif usr_input == self.exclude_flag:
+                while True:
+                    trace_input = input("Trace number to exclude from efficiency calculation: ")
+                    try:
+                        int(trace_input)
+                    except ValueError:
+                        if trace_input == self.quit_flag:
+                            return -1
+                        print("User must input a number!")
+                        continue
+                    else:
+                        trace_input = int(trace_input)
+                        if trace_input < self.start_trace or trace_input > self.end_trace-1:
+                            print("User must input a valid number!")
+                            continue
+                        plt.close()
+                        self.handle_exclusion(trace_input)
+                        return 8
             elif usr_input == self.fusion_flag:
                 while True:
                     trace_input = input("Trace number to mark fusion: ")
@@ -140,6 +171,11 @@ class UserInputHandler:
             elif usr_input == self.invert_flag:
                 print("Invert colors.")
                 return 7
+            elif usr_input == self.write_flag:
+                dw = DataWriter(self.id)
+                dw.set_output_dst()
+                dw.write()
+                return 9
             elif usr_input == self.help_flag:
                 self.handle_help()
                 continue
@@ -191,8 +227,6 @@ class DataWriter:
         return dst_path
 
     def update_fusion_output(self):
-        if os.path.exists(self.output):
-            pass
         with open(self.output, "w+") as dst:
             dst.write(self.srcmat + "\n")
             for i in range(0, self.id.num_traces):
@@ -201,3 +235,12 @@ class DataWriter:
                             key != "RawDataNorm"]
                     line = ",".join(line)
                     dst.write(line + "\n")
+
+    def write(self):
+        with open(self.output, "w+") as dst:
+            dst.write(self.srcmat + "\n")
+            for i in range(0, self.id.num_traces):
+                line = [str(self.id.df[key][i]) for key in self.id.col_names if key != "Data" and
+                        key != "RawDataNorm"]
+                line = ",".join(line)
+                dst.write(line + "\n")
