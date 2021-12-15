@@ -25,6 +25,7 @@ class UserInputHandler:
         self.save_flag = "s"
         self.write_flag = "w"
         self.invert_flag = "i"
+        self.arrange_flag = "a"
         self.help_flag = "h"
         self.prompt_msg = "User Review Traces - input command below, press \'" + self.help_flag + "\' for help:\n"
 
@@ -74,6 +75,20 @@ class UserInputHandler:
                     self.id.df["FusionEnd"][trace_idx] = int(line_split[4])
                 isExclusion = int(line_split[5][:-1])
                 self.id.df["isExclusion"][trace_idx] = isExclusion
+                
+    def handle_arrangement(self):
+        while True:
+            try:
+                rows, cols = [int(x) for x in input("Enter number of desired rows & columns separated by a space:\n").split()]
+            except ValueError:
+                print("User must input 2 valid integers separated by a space!")
+                continue
+            else:
+                self.num_rows, self.num_cols = int(rows), int(cols)
+                if self.num_rows < 1 or self.num_cols <= 1:
+                    print("User must input valid numbers - figure panel must have at least 1 row & >1 columns!")
+                    continue
+                return 0
 
     def handle_help(self):
         help_msg = "Available terminal command flags are as listed:\n"
@@ -87,6 +102,7 @@ class UserInputHandler:
         help_msg += "\'" + self.save_flag + "\'" + " - save the current progression***\n***NOTE: THIS MUST BE USED TO " \
                                                    "SAVE PROGRESS, OTHERWISE RE-SCORING WILL *NOT* BE SAVED!!!\n"
         help_msg += "\'" + self.write_flag + "\'" + " - write all traces, including those not reviewed yet, to .txt output file\n"
+        help_msg += "\'" + self.arrange_flag + "\'" + " - arrange the figure panel as an array of m_rows x n_columns\n"
         help_msg += "\'" + self.invert_flag + "\'" + " - invert colors (great for night time & reducing eye strain!)\n"
         print(help_msg)
 
@@ -176,6 +192,8 @@ class UserInputHandler:
                 dw.set_output_dst()
                 dw.write()
                 return 9
+            elif usr_input == self.arrange_flag:
+                return 10
             elif usr_input == self.help_flag:
                 self.handle_help()
                 continue

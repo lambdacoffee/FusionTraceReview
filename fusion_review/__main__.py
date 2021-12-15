@@ -18,7 +18,6 @@ def handle_input_codes(panel_num, trace_panel, input_handler):
     This handles the logic associated with each user_input_code returned from UserInputHandler object instance.
     Codes are as follows (taken from the utilog.py file):
         * -1: quit
-        * -1: quit
         * 0: previous
         * 2: fusion
         * 3: undo
@@ -28,6 +27,7 @@ def handle_input_codes(panel_num, trace_panel, input_handler):
         * 7: invert
         * 8: exclude
         * 9: write
+        * 10: change #rows, #columns
 
     :param panel_num: the current panel number of the current dataset
     :param trace_panel: the current panel object to be displayed
@@ -42,7 +42,8 @@ def handle_input_codes(panel_num, trace_panel, input_handler):
         # previous panel
         if panel_num > 1:
             panel_num -= 2
-            trace_panel.curridx = input_handler.start_trace - (trace_panel.rows * trace_panel.cols) - 1
+            new_idx = input_handler.start_trace - (trace_panel.rows * trace_panel.cols) - 1
+            trace_panel.curridx = new_idx if new_idx > 0 else 0
         else:
             panel_num -= 1
             trace_panel.curridx = input_handler.start_trace - 1
@@ -72,6 +73,14 @@ def handle_input_codes(panel_num, trace_panel, input_handler):
         trace_panel.invert_colors()
     elif user_input_code == 9:
         print("Fusion data for all traces has been written!")
+        panel_num -= 1
+        trace_panel.curridx = input_handler.start_trace - 1
+    elif user_input_code == 10:
+        input_handler.handle_arrangement()
+        trace_panel.rows = input_handler.num_rows
+        trace_panel.cols = input_handler.num_cols
+        trace_panel.figs = ((input_handler.id.num_traces - trace_panel.stidx) // (trace_panel.rows * trace_panel.cols)) + 1
+        print("Updated figure panel to new configuration.")
         panel_num -= 1
         trace_panel.curridx = input_handler.start_trace - 1
     return panel_num
@@ -164,8 +173,10 @@ def main(par_src_dir):
     ID.get_traces(iss)
     ID.set_times(flow_start_dict[datum_key])
     # ID is now dict
+    rows = 3
+    cols = 4
     while True:
-        itfp = IntensityTraceFigurePanel(ID.num_traces, 3, 4, ID)
+        itfp = IntensityTraceFigurePanel(ID.num_traces, rows, cols, ID)
         panel = itfp.stidx
         print("Displaying traces for: " + os.path.split(source_path)[-1])
         while panel < itfp.figs:

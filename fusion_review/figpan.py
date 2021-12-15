@@ -62,7 +62,7 @@ class IntensityTraceFigurePanel:
 
     def handle_single_plot(self, panel_count):
         self.setup(plt)
-        plt.axvline(x=self.id.start, color="b", linestyle="dashed")
+        plt.axvline(x=self.id.start, color="b", linestyle="dashed", zorder=0)
         plt.title("Trace {} of {}".format(panel_count, self.figs), fontsize=16)
         fig = plt.gcf()
         fig.set_size_inches(12, 5)
@@ -82,9 +82,9 @@ class IntensityTraceFigurePanel:
                 continue
         if it.isFusion:
             fusion_interval_points = it.get_fusion_data()
-            axes.axvline(x=fusion_interval_points[0], color="r", linestyle="dashed")
-            axes.axvline(x=fusion_interval_points[1], color="r")
-            axes.axvline(x=fusion_interval_points[2], color="r", linestyle="dashed")
+            axes.axvline(x=fusion_interval_points[0], color="r", linestyle="dashed", zorder=0)
+            axes.axvline(x=fusion_interval_points[1], color="r", zorder=0)
+            axes.axvline(x=fusion_interval_points[2], color="r", linestyle="dashed", zorder=0)
         return axes
 
     def form_plot(self):

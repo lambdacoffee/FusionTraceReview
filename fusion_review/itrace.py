@@ -23,7 +23,7 @@ class IntensityTrace:
             color = "tab:red"
         else:
             color = "black"
-        self.datad = {"TruncDataNorm": {"time": [], "data": [], "c": color, "z": 0}}
+        self.datad = {"TruncDataNorm": {"time": [], "data": [], "c": color, "z": 2}}
 
     def set_raw_norm_data(self):
         raw_trace = np.asarray(self.id.df["Data"][self.num-1], dtype=np.float32)
