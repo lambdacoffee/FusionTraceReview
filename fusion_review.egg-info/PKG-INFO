@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: fusion-review
+Version: 0.5.3
+Summary: This is intended for use of reviewing and marking fusion events occurring in intensity traces.
+Home-page: https://github.com/lambdacoffee/FusionTraceReview
+Author: Marcos Cervantes
+Author-email: mc2mn@virginia.edu
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Requires-Python: >=3.6.0
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+
+UNKNOWN
+
