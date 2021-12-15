@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fusion-review
-Version: 0.5.3
+Version: 0.5.4
 Summary: This is intended for use of reviewing and marking fusion events occurring in intensity traces.
 Home-page: https://github.com/lambdacoffee/FusionTraceReview
 Author: Marcos Cervantes
