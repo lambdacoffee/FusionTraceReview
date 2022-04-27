@@ -84,7 +84,8 @@ class IntensityTraceFigurePanel:
         it.set_gradients()
         it.set_cumsum()
         it.set_rms()
-        it.guess = True if self.id.df["Prediction"][self.curridx] == 1 else False
+        it.guess = False
+        #it.guess = True if self.id.df["Prediction"][self.curridx] == 1 else False
         if it.guess:
             it.datad["TruncDataNorm"]["c"] = "tab:purple"
         norm_data = []
