@@ -172,6 +172,9 @@ class IntensityTraceFigurePanel:
             #    if it.datad["TruncDataNormGrad"]["data"][p - self.id.start] > 0:
             #        axes.axvline(x=p, color="tab:orange", linestyle="dashed", zorder=0)
         if it.isFusion:
+            if self.id.mode == "Sigma":
+                binding = it.get_binding()
+                axes.axvline(x=binding, color="r", zorder=0)
             fusion_interval_points = it.get_fusion_data()
             axes.axvline(x=fusion_interval_points[0], color="r", linestyle="dashed", zorder=0)
             axes.axvline(x=fusion_interval_points[1], color="r", zorder=0)
