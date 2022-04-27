@@ -84,6 +84,10 @@ class IntensityTrace:
             fusion_end_time = self.id.df["FusionEnd"][self.num-1]
             fusion_med_time = np.median([fusion_start_time, fusion_end_time])
             return (fusion_start_time, fusion_med_time, fusion_end_time)
+        
+    def get_binding(self):
+        if self.id.df["isFusion"][self.num-1]:
+            return self.id.df["Binding"][self.num-1]
 
     def __str__(self):
         return self.set_raw_norm_data()
