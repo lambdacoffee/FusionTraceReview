@@ -101,7 +101,8 @@ class IntensityTraceFigurePanel:
                 #axes.plot(it.datad[key]["time"], np.asarray(it.datad[key]["data"]), zorder=curr_z, color=curr_color)
                 pass
             elif key == "TruncDataNormFilt" and it.guess:
-                axes.plot(it.datad[key]["time"], np.asarray(it.datad[key]["data"]), zorder=curr_z, color=curr_color)
+                #axes.plot(it.datad[key]["time"], np.asarray(it.datad[key]["data"]), zorder=curr_z, color=curr_color)
+                pass
             elif key == "TruncCumSum":
                 #axes.plot(it.datad[key]["time"], np.asarray(it.datad[key]["data"]), zorder=curr_z, color=curr_color)
                 pass
