@@ -229,7 +229,7 @@ def main(par_src_dir):
     cols = 4
     mpl.use("Tkagg")
     while True:
-        ID.get_predictions(os.path.join(par_src_dir, "TraceAnalysis", "LearningAnalysis"))
+        #ID.get_predictions(os.path.join(par_src_dir, "TraceAnalysis", "LearningAnalysis"))
         itfp = IntensityTraceFigurePanel(rows, cols, ID, dh)
         panel = itfp.stidx
         print("Displaying traces for: " + os.path.split(source_path)[-1])
