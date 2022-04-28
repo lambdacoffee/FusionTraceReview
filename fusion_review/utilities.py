@@ -380,7 +380,7 @@ class TracePanelWriter:
         intensity_database.set_times(flow_dictionary[datum_key])
         defocus_handler = DefocusHandler(intensity_database)
         data_writer = DataWriter(intensity_database)
-        defocus_handler.read(data_writer)
+        #defocus_handler.read(data_writer)
         itfp = IntensityTraceFigurePanel(3, 4, intensity_database, defocus_handler)
         imarr = []
         user_input_handler = UserInputHandler(itfp, intensity_database, defocus_handler)
