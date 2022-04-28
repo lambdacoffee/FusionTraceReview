@@ -107,7 +107,8 @@ class IntensityTraceFigurePanel:
                 #axes.plot(it.datad[key]["time"], np.asarray(it.datad[key]["data"]), zorder=curr_z, color=curr_color)
                 pass
             elif key == "TruncDataNormRMS":
-                axes.plot(it.datad[key]["time"], np.asarray(it.datad[key]["data"]), zorder=curr_z, color=curr_color)
+                #axes.plot(it.datad[key]["time"], np.asarray(it.datad[key]["data"]), zorder=curr_z, color=curr_color)
+                pass
         if self.show_defocus and it.guess:
             trace_points = self.dh.changepoints[self.curridx+1]
             defocus_events_intrsxn = self.dh.events.intersection(trace_points)
