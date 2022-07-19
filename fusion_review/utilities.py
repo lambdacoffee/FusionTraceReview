@@ -288,7 +288,7 @@ class DataWriter:
     def update_fusion_output(self):
         with open(self.output, "w+") as dst:
             dst.write(self.srcmat + "\n")
-            for i in range(0, self.id.num_traces + 1):
+            for i in range(0, self.id.num_traces):
                 if self.id.df["Status"][i] == 1:
                     line = [str(self.id.df[key][i]) for key in self.id.col_names if key != "Data" and
                             key != "RawDataNorm" and key != "Prediction"]
