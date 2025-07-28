@@ -1,2 +1,2 @@
 [console_scripts]
-fusion_review = fusion_review.__main__:entrypoint
+fusionReviewGamma = fusionReviewGamma.__main__:entrypoint
