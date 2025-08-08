@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trace_reviewer"
+description = "This is intended for reviewing and marking events occurring in intensity traces."
+version = "0.7.0"
+requires-python = ">=3.6"
+dependencies = [
+	"matplotlib>=3.4.2",
+	"numpy>=1.20.3",
+	"scikit-image>=0.19.3",
+	"scipy>1.10.1",
+	"tqdm>=4.62.3",
+	"statsmodels>=0.13.1",
+	"imageio>=2.19.3",
+	"ruptures>=1.1.5"
+]
+readme = "README.md"
+authors = [{name = "Marcos Cervantes", email = "mc2mn@virginia.edu"}]
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"Operating System :: OS Independent",
+	"Development Status :: 4 - Beta",
+]
+
+[project.urls]
+repository = "https://github.com/lambdacoffee/"

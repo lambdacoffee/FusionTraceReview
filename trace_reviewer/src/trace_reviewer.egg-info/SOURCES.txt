@@ -1,0 +1,13 @@
+LICENSE.txt
+README.md
+pyproject.toml
+src/trace_reviewer/__init__.py
+src/trace_reviewer/__main__.py
+src/trace_reviewer/figpan.py
+src/trace_reviewer/trace_manager.py
+src/trace_reviewer/utilities.py
+src/trace_reviewer.egg-info/PKG-INFO
+src/trace_reviewer.egg-info/SOURCES.txt
+src/trace_reviewer.egg-info/dependency_links.txt
+src/trace_reviewer.egg-info/requires.txt
+src/trace_reviewer.egg-info/top_level.txt
