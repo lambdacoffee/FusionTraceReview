@@ -1,17 +1,4 @@
 
-function determineIfFiji() {
-	/*
- 	* This function determines if Fiji is being used.
- 	* returns: boolean 
- 	* 	- true if Fiji.app, else false (ImageJ)
- 	*/
-	startup_path = getDirectory("startup");
-	startup_path_split = split(startup_path, File.separator);
-	if (indexOf(startup_path_split[startup_path_split.length-1], "Fiji") != -1)
-		{return true;}
-	else {return false;}
-}
-
 function createWelcome(help_filepath) {
 	help_txt = File.openAsString(help_filepath);
 	title = "Welcome!";
@@ -30,25 +17,6 @@ function createWelcome(help_filepath) {
 function err(error_code) {
 	if (error_code == -1) {
 		message = "FATAL ERROR: Unsupported File Type!";
-	} else if (error_code == -2) {
-		message = "FATAL ERROR: Cannot locate summary.txt file!";
-	} else if (error_code == -3) {
-		message = "FATAL ERROR: Empty directory for source data...!";
-	} else if (error_code == -5) {
-		message = "FATAL ERROR - ALTERED CORE CONTENTS: Missing interface file!";
-	} else if (error_code == -6) {
-		message = "FATAL ERROR - ALTERED CORE CONTENTS: Missing interface file!";
-	} else if (error_code == -7) {
-		message = "FATAL ERROR - Misconfigured summary.txt file - HEADER NOT FOUND";
-	} else if (error_code == -8) {
-		message = "FATAL ERROR - Broken correlation between media type and representing color...";
-	} else if (error_code == -9) {
-		message = "FATAL ERROR - FLow pathing conflict - destination folder cannot be a subdirectory of source folder!";
-		message += "\nPlease check source directory before attempting processing again.";
-	} else if (error_code == -10) {
-		message = "FATAL ERROR - DESTINATION 'TEMP' DIRECTORY ALREADY EXISTS!";
-		message += "\nPlease rename or move the current destination directory from";
-		message += "\nthe Fiji.app directory.";
 	} else if (error_code == -11) {
 		message = "FATAL CODE ERROR - function arrGet() has been incorrectly fed!";
 	} message += "\nTERMINATING SEQUENCE - abort process...";
@@ -56,39 +24,12 @@ function err(error_code) {
 }
 
 function arrGet(array, arg) {
-	/*Returns first index of arg in array if match is found, returns -1 if not.*/
+	/*
+	Returns first index of arg in array if match is found, returns -1 if not.
+	*/
 	for (i=0; i<array.length; i++) {
 		if (array[i] == arg) {return i;}
 	} return -1;
-}
-
-function specifyKassonLibDir() {
-	showMessage("KassonLib Location", "Please specify the location of the KassonLib directory!");
-	dir_path = getDirectory("Location of KassonLib...");
-	return dir_path;
-}
-
-function getKassonLibDir() {
-	res_dir = getDirectory("macros") + "KassonLib" + File.separator;	
-	if (!File.exists(res_dir)) {
-		res_dir = getDirectory("macros") + "KassonLib-master" + File.separator;
-		if (!File.exists(res_dir)) {
-			kasson_lib_info_path = getDirectory("macros") + "KassonLibInfo.txt";
-			if (!File.exists(kasson_lib_info_path)) {
-				res_dir = specifyKassonLibDir();
-				txt_file = File.open(kasson_lib_info_path);
-				print(txt_file, res_dir);
-				File.close(txt_file);
-			} else {
-				res_dir = File.openAsString(kasson_lib_info_path);
-				res_dir = replace(res_dir, "\n", "");
-				if (!File.exists(res_dir)) {
-					File.delete(kasson_lib_info_path);
-					res_dir = getKassonLibDir();
-				}
-			}
-		}
-	} return res_dir;
 }
 
 function getSourceFiles(analysis_pardir) {	
@@ -184,7 +125,6 @@ function createSubdirs(analysis_pardir) {
 }
 
 function main() {
-	kasson_lib_dir = getKassonLibDir();
 	help_filepath = kasson_lib_dir + "log" + File.separator + "help.txt";
 	createWelcome(help_filepath);
 	
@@ -204,8 +144,7 @@ function main() {
 	createSubdirs(analysis_parent_directory);
 	
 	showMessage("Parameters set & subdirectories created.\nProceding to trace extraction.");
-	// vid_seg_script = "C:\\Users\\marcos\\Desktop\\KassonLib-gamma\\scripts\\gamma_ijm\\vid_seg_script.ijm";
-	vid_seg_script = kasson_lib_dir + "scripts" + File.separator + "gamma_ijm" + File.separator + "vid_seg_script.ijm";
+	vid_seg_script = File.getDefaultDir + "video-segmentation.ijm";
 	runMacro(vid_seg_script, info_filepath);
 }
 
