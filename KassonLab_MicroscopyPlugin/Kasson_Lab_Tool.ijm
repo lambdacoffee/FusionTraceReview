@@ -15,6 +15,9 @@ function createWelcome(help_filepath) {
 }
 
 function err(error_code) {
+	/*
+	 * Catch-all function for error handling.
+	 */
 	if (error_code == -1) {
 		message = "FATAL ERROR: Unsupported File Type!";
 	} else if (error_code == -11) {
@@ -25,8 +28,8 @@ function err(error_code) {
 
 function arrGet(array, arg) {
 	/*
-	Returns first index of arg in array if match is found, returns -1 if not.
-	*/
+	 * Returns first index of arg in array if match is found, returns -1 if not.
+	 */
 	for (i=0; i<array.length; i++) {
 		if (array[i] == arg) {return i;}
 	} return -1;
@@ -73,6 +76,18 @@ function getSourceFiles(analysis_pardir) {
 }
 
 function setParameters(info_filepath) {
+	/*
+	 * This function generates dialog boxes for User to input parameters.
+	 * These will be written to ./analysis_dir/info.txt & passed along 
+	 * to video-segmentation.ijm
+	 * 
+	 * Current parameters supported are:
+	 * 		- Starting frame, frame number when flow started during video
+	 * 		- Time interval, acquisition rate of the video
+	 * 		- Background kernel, size of kernel radius for background subtraction
+	 * 		- Prominence, threshold for peak detection
+	 * 		- Tolerance, threshold for determining particle size, distance from peak
+	 */
 	text = File.openAsString(info_filepath);
 	text_lines = split(text, "\n");
 	labels_arr = newArray(text_lines.length - 1);
@@ -82,23 +97,65 @@ function setParameters(info_filepath) {
 		line_arr = split(curr_line, ",");
 		labels_arr[i - 1] = line_arr[0];
 		filepaths_arr[i - 1] = line_arr[1];
-	} Dialog.createNonBlocking("Set starting frames for analysis.");
+	} 
+	
+	// Getting starting frames. Must be integer >= 0, with 0 being
+	// used for videos featuring binding events as particles flow in.
+	Dialog.createNonBlocking("Set starting frames for analysis.");
 	for (i = 0; i < labels_arr.length; i++) {
 		Dialog.addNumber(labels_arr[i] + " start frame:", 0);
 	} Dialog.show();
 	frames_arr = newArray(labels_arr.length);
 	for (i = 0; i < frames_arr.length; i++) {
 		frames_arr[i] = d2s(Dialog.getNumber(),0);
-	} Dialog.createNonBlocking("Set acquisition rate for analysis.");
+	} 
+	
+	// Getting time intervals.
+	Dialog.createNonBlocking("Set acquisition rate for analysis.");
 	for (i = 0; i < labels_arr.length; i++) {
 		Dialog.addNumber(labels_arr[i] + " acquisition rate:", 1, 3, 8, "[seconds]");
 	} Dialog.show();
 	time_intervals_arr = newArray(labels_arr.length);
 	for (i = 0; i < time_intervals_arr.length; i++) {
 		time_intervals_arr[i] = d2s(Dialog.getNumber(),3);
-	} updated_text = "Label,StartFrame,TimeInterval[s],Filepath\n";
+	} 
+	
+	// Getting background kernel size.
+	Dialog.createNonBlocking("Set rolling kernel radius size for background subtraction.");
+	for (i = 0; i < labels_arr.length; i++) {
+		Dialog.addNumber(labels_arr[i] + " rolling radius:", 3);
+	} Dialog.show();
+	bkgd_arr = newArray(labels_arr.length);
+	for (i = 0; i < bkgd_arr.length; i++) {
+		bkgd_arr[i] = d2s(Dialog.getNumber(),0);
+	} 
+	
+	// Getting prominence thresholds.
+	Dialog.createNonBlocking("Set prominence threshold for particle peak detection.");
+	for (i = 0; i < labels_arr.length; i++) {
+		Dialog.addNumber(labels_arr[i] + " prominence threshold:", 1000);
+	} Dialog.show();
+	prominence_arr = newArray(labels_arr.length);
+	for (i = 0; i < prominence_arr.length; i++) {
+		prominence_arr[i] = d2s(Dialog.getNumber(),0);
+	} 
+	
+	// Getting tolerance thresholds for setting stopping point in expanding
+	// size of particles from peaks. Must be 0 < tolerance < 1.
+	// Algo: stop expanding when pixel profile vals < peak val * tolerance.
+	Dialog.createNonBlocking("Set tolerance threshold for particle size determination.");
+	for (i = 0; i < labels_arr.length; i++) {
+		Dialog.addNumber(labels_arr[i] + " tolerance:", 0.1);
+	} Dialog.show();
+	tolerance_arr = newArray(labels_arr.length);
+	for (i = 0; i < tolerance_arr.length; i++) {
+		tolerance_arr[i] = d2s(Dialog.getNumber(),0);
+	} 
+	
+	// Adding parameters to info.txt file
+	updated_text = "Label,StartFrame,TimeInterval[s],RollingRadius,PeakProminence,ProfileTolerance,Filepath\n";
 	for (i = 0; i < text_lines.length - 1; i++) {
-		updated_line_arr = newArray(labels_arr[i], frames_arr[i], time_intervals_arr[i], filepaths_arr[i]);
+		updated_line_arr = newArray(labels_arr[i], frames_arr[i], time_intervals_arr[i], bkgd_arr[i], prominence_arr[i], tolerance_arr[i], filepaths_arr[i]);
 		updated_line = String.join(updated_line_arr, ",");
 		updated_text += updated_line + "\n";
 	} file = File.open(info_filepath);
@@ -129,11 +186,14 @@ function main() {
 	createWelcome(help_filepath);
 	
 	Dialog.createNonBlocking("Instructions");
-	Dialog.addMessage("You will be taken through 3 menus where you can:\n");
+	Dialog.addMessage("You will be taken through 6 menus where you can:\n");
 	Dialog.setInsets(5, 50, 5);
 	instructions = "- add video files to analyze and label them\n";
 	instructions += "- add the starting frame for analysis of dwell times\n";
 	instructions += "- add the aquistion rate for calculation of dwell times\n";
+	instructions += "- adjust the rolling radius size for background subtraction\n";
+	instructions += "- adjust the particle peak prominence values for segmentation\n";
+	instructions += "- adjust the tolerance for determining particle sizes\n";
 	Dialog.addMessage(instructions);
 	Dialog.show();
 	

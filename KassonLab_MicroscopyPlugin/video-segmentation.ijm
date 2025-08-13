@@ -1,25 +1,46 @@
-
+/*
+ * This script is automatically called from Kasson_Lab_Tool.ijm after User inputs
+ * the parameter values. This script takes the filepath for the info.txt file
+ * created and applies the correlating values to the segmentation process for each
+ * video.
+ */
 info_filepath = getArgument();
 text = File.openAsString(info_filepath);
 text_lines = split(text, "\n");
+
+// Note: always have the data labels be idx=0, & filepaths idx[length-1] for continuity
+
 labels_arr = newArray(text_lines.length - 1);
 filepaths_arr = newArray(text_lines.length - 1);
+
+bkgd_arr = newArray(text_lines.length - 1);
+prominence_arr = newArray(text_lines.length - 1);
+tolerance_arr = newArray(text_lines.length - 1);
+
 for (i = 1; i < text_lines.length; i++) {
+	// Note: line_arr[1:3] are StartFrame & TimeInterval params, not needed here.
 	curr_line = text_lines[i];
 	line_arr = split(curr_line, ",");
 	labels_arr[i - 1] = line_arr[0];
 	filepaths_arr[i - 1] = line_arr[line_arr.length - 1];
+	bkgd_arr[i - 1] = line_arr[3];
+	prominence_arr[i - 1] = line_arr[4];
+	tolerance_arr[i - 1] = line_arr[5];
 } analysis_pardir = File.getDirectory(info_filepath);	// trailing file separator
 
 for (i=0; i<labels_arr.length; i++) {
 	dst_subdir = analysis_pardir + "Segmentation" + File.separator + labels_arr[i];
+	rolling_background_param = bkgd_arr[i];
+	peak_prominence_param = prominence_arr[i];
+	profile_tolerance_param = parseFloat(tolerance_arr[i]);
+	
 	run("TIFF Virtual Stack...", "open=" + filepaths_arr[i]);
 	//open(filepaths_arr[i]);
 	//run("Bio-Formats Importer", "open=["+ filepaths_arr[i] +"] autoscale color_mode=Default stack_order=Default");
 	//run("Enhance Contrast", "saturated=0.35");
 	vid_id = getImageID();
 	Image.removeScale();
-	run("Subtract Background...", "rolling=3");
+	run("Subtract Background...", "rolling=" + rolling_background_param);
 	run("Z Project...", "projection=[Sum Slices]");
 	// run("Z Project...", "stop=4 projection=[Max Intensity]");	// for photobleaching
 	median_id = getImageID();
@@ -29,7 +50,7 @@ for (i=0; i<labels_arr.length; i++) {
 	
 	// run("Subtract Background...", "rolling=5");	// for photobleaching
 	
-	run("Find Maxima...", "prominence=1000 output=[Single Points]");
+	run("Find Maxima...", "prominence=" + peak_prominence_param + " output=[Single Points]");
 	// run("Find Maxima...", "prominence=50 output=[Single Points]");	// for photobleaching
 	peaks_bin_id = getImageID();
 	run("Analyze Particles...", "pixel add");
@@ -67,7 +88,7 @@ for (i=0; i<labels_arr.length; i++) {
 				Array.getStatistics(profile_arr, min, max, mean, stdDev);
 				// if (profile_arr[0] < peak_val / 2 || profile_arr[profile_arr.length-1] < peak_val / 2 || profile_arr[0] >= peak_val || profile_arr[profile_arr.length-1] >= peak_val) {
 				// if (profile_arr[0] < peak_val * 0.01 || profile_arr[profile_arr.length-1] < peak_val * 0.01 || profile_arr[0] >= peak_val || profile_arr[profile_arr.length-1] >= peak_val) {
-				if (profile_arr[0] < max * 0.1 || profile_arr[profile_arr.length-1] < max * 0.1 || profile_arr[0] >= profile_arr[1] || profile_arr[profile_arr.length-1] >= profile_arr[profile_arr.length-2]) {
+				if (profile_arr[0] < max * profile_tolerance_param || profile_arr[profile_arr.length-1] < max * profile_tolerance_param || profile_arr[0] >= profile_arr[1] || profile_arr[profile_arr.length-1] >= profile_arr[profile_arr.length-2]) {
 					break;
 				} if (j > 12) {break;}
 			} j ++;
@@ -152,4 +173,4 @@ for (i=0; i<labels_arr.length; i++) {
 	run("Close");
 	selectWindow("ROI Manager");
 	run("Close");
-}
+} showMessage("All done!");
