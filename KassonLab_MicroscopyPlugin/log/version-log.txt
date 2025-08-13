@@ -1,0 +1,18 @@
+version: 0.1
+- base deployment
+==========================================================================
+version: 0.2
+- Including support for additional segmentation parameters:
+	- Rolling radius size for background subtraction
+	- Prominence value for peak detection
+	- Tolerance value for particle size cutoff
+- this version-log.txt file for version/edit summary
+==========================================================================
+
+*** Known to-do list:
+	- update linux installation/uninstallation files
+	- commentary & documentation!
+	- should update video-sementation.ijm to include other things...
+	- should clean-up utilities.py in trace-reviewer
+	- should provide support for User using alternative segmentation
+	  methods
