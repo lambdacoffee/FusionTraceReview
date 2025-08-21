@@ -5,7 +5,7 @@ Created by - { alias : lambdacoffee :: author : Marcos Cervantes }
 """
 
 
-from fusionReviewGamma.trace_manager import IntensityTrace
+from trace_reviewer.trace_manager import IntensityTrace
 import matplotlib.pyplot as plt
 import os
 
