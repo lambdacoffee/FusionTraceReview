@@ -5,7 +5,7 @@
 
 import matplotlib
 import matplotlib.pyplot as plt
-from fusionReviewGamma.figpan import FigurePanel
+from trace_reviewer.figpan import FigurePanel
 from functools import partial
 import multiprocessing
 from tqdm import tqdm
