@@ -11,9 +11,9 @@ To use:
 
 import matplotlib
 import argparse
-from fusionReviewGamma.utilities import InitialChoicePrompt, UserInputHandler
-from fusionReviewGamma.trace_manager import TraceManager
-from fusionReviewGamma.figpan import FigurePanel
+from trace_reviewer.utilities import InitialChoicePrompt, UserInputHandler
+from trace_reviewer.trace_manager import TraceManager
+from trace_reviewer.figpan import FigurePanel
 import os
 
 
