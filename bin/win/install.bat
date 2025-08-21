@@ -38,11 +38,11 @@ for /f "delims=" %%f in ('dir /s /b ImageJ*.exe') do (
 	for %%a in (%%f) do (
 		for %%b in ((%%~dpa\.) do (
 			if %%~nxb EQU Fiji.app (
-				SET fijidir="%cd%"\
 				SET fiji="%%f"
 				echo ***
 				echo found Fiji - hooray!
 				echo ***
+				SET fijidir=%%~dpa
 			)
 		)
 	)
@@ -53,7 +53,7 @@ PAUSE
 if not exist %fiji% (
 	start https://imagej.net/software/fiji/downloads
 ) else (
-	robocopy %kassonlibdir%KassonLab_MicroscopyPlugin %fijidir%plugins /KassonLab_MicroscopyPlugin
+	robocopy %kassonlibdir%KassonLab_MicroscopyPlugin %fijidir%plugins/KassonLab_MicroscopyPlugin
 )
 
 echo *** Installation successful ***
