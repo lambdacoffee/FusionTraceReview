@@ -2,8 +2,7 @@
 function createWelcome(help_filepath) {
 	help_txt = File.openAsString(help_filepath);
 	title = "Welcome!";
-	if (determineIfFiji()) {Dialog.createNonBlocking(title);}
-	else {Dialog.create(title);}
+	Dialog.createNonBlocking(title);
 	message = "This is the Kasson Tool extension plugin for Fiji (Fiji Is Just ImageJ).";
 	message += "\nThis plugin utilizes Fiji & Python for performing semi-automated analysis workflows related to viral fusion.";
 	message += "\nPlease ensure that Python is installed.";
@@ -182,7 +181,8 @@ function createSubdirs(analysis_pardir) {
 }
 
 function main() {
-	help_filepath = kasson_lib_dir + "log" + File.separator + "help.txt";
+	pardir = getDirectory("plugins");
+	help_filepath = pardir + "log" + File.separator + "help.txt";
 	createWelcome(help_filepath);
 	
 	Dialog.createNonBlocking("Instructions");
@@ -204,7 +204,7 @@ function main() {
 	createSubdirs(analysis_parent_directory);
 	
 	showMessage("Parameters set & subdirectories created.\nProceding to trace extraction.");
-	vid_seg_script = File.getDefaultDir + "video-segmentation.ijm";
+	vid_seg_script = pardir + "video-segmentation.ijm";
 	runMacro(vid_seg_script, info_filepath);
 }
 
