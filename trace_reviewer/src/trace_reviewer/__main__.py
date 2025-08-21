@@ -5,15 +5,15 @@ command line execution from the End User.
 Created by - { alias : lambdacoffee :: author : Marcos Cervantes }
 
 To use:
-    $ python3 -m fusionReview "../path/to/data_analysis_parent_directory"
+    $ python3 -m trace_reviewer "../path/to/data_analysis_parent_directory"
 """
 
 
 import matplotlib
 import argparse
-from fusionReviewGamma.utilities import InitialChoicePrompt, UserInputHandler
-from fusionReviewGamma.trace_manager import TraceManager
-from fusionReviewGamma.figpan import FigurePanel
+from utilities import InitialChoicePrompt, UserInputHandler
+from trace_manager import TraceManager
+from figpan import FigurePanel
 import os
 
 

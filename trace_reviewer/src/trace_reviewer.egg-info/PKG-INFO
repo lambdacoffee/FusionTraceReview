@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: trace_reviewer
-Version: 0.7.0
+Version: 0.8.0
 Summary: This is intended for reviewing and marking events occurring in intensity traces.
 Author-email: Marcos Cervantes <mc2mn@virginia.edu>
 Project-URL: repository, https://github.com/lambdacoffee/
